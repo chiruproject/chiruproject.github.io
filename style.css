@@ -1,9 +1,0 @@
-/* style.css */
-body { background-color: #f0f2f5; }
-.container { max-width: 700px; }
-.item-pego .form-check-label span { text-decoration: line-through; color: #6c757d; }
-.item-pego { background-color: #f8f9fa; }
-.delete-btn { border: none; background: none; }
-.form-check-input { cursor: pointer; }
-.accordion-button:not(.collapsed) { background-color: #e7f1ff; }
-.form-control, .form-select { min-width: 120px; }

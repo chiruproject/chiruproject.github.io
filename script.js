@@ -9,14 +9,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const listaVaziaMsg = document.getElementById('lista-vazia-msg');
     const clearCompletedBtn = document.getElementById('clear-completed-btn');
     
-    // Seletores para os campos de quantidade
     const quantidadeUnidadeContainer = document.getElementById('quantidade-container-unidade');
     const quantidadePesoContainer = document.getElementById('quantidade-container-peso');
     const quantidadeInput = document.getElementById('quantidade-input');
     const pesoInput = document.getElementById('peso-input');
     const unidadeInput = document.getElementById('unidade-input');
 
-    // Seletor para o Dark Mode
     const darkModeToggle = document.getElementById('darkModeToggle');
 
     // --- Lógica do Dark Mode ---
@@ -32,16 +30,19 @@ document.addEventListener('DOMContentLoaded', () => {
         darkModeToggle.checked = false;
     };
 
-    // Verifica a preferência do usuário ao carregar a página
-    if (localStorage.getItem('theme') === 'dark') {
+    // MUDANÇA PRINCIPAL: Ativa o modo escuro por padrão
+    // Se o usuário nunca escolheu o modo claro, o tema será escuro.
+    if (localStorage.getItem('theme') === 'light') {
+        disableDarkMode();
+    } else {
         enableDarkMode();
     }
 
     darkModeToggle.addEventListener('click', () => {
-        if (localStorage.getItem('theme') !== 'dark') {
-            enableDarkMode();
-        } else {
+        if (document.body.classList.contains('dark-mode')) {
             disableDarkMode();
+        } else {
+            enableDarkMode();
         }
     });
 
@@ -56,9 +57,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (items.length === 0) {
             listaVaziaMsg.classList.remove('d-none');
+            accordionContainer.classList.add('d-none');
             return;
         }
         listaVaziaMsg.classList.add('d-none');
+        accordionContainer.classList.remove('d-none');
 
         const itensAgrupados = items.reduce((acc, item) => {
             (acc[item.categoria] = acc[item.categoria] || []).push(item);
@@ -75,7 +78,6 @@ document.addEventListener('DOMContentLoaded', () => {
                         <div class="form-check">
                             <input class="form-check-input toggle-check" type="checkbox" id="item-${item.id}" ${item.pego ? 'checked' : ''}>
                             <label class="form-check-label" for="item-${item.id}">
-                                <!-- A quantidade agora é uma string formatada -->
                                 <span>${item.quantidade} ${item.produto}</span>
                             </label>
                         </div>
@@ -88,7 +90,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const accordionItemHtml = `
                 <div class="accordion-item">
                     <h2 class="accordion-header" id="heading-${index}">
-                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-${index}" aria-expanded="true">
+                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-${index}">
                             ${categoria}
                         </button>
                     </h2>
@@ -104,8 +106,6 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     // --- Event Listeners ---
-
-    // Lógica para alternar o campo de quantidade
     categoriaInput.addEventListener('change', () => {
         if (categoriaInput.value === 'Carnes e Frios') {
             quantidadeUnidadeContainer.classList.add('d-none');
@@ -116,7 +116,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Adicionar um novo item
     form.addEventListener('submit', (e) => {
         e.preventDefault();
         const produto = produtoInput.value.trim();
@@ -135,7 +134,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const novoItem = {
             id: Date.now(),
             produto: produto,
-            quantidade: quantidadeFormatada, // Salva a string já formatada
+            quantidade: quantidadeFormatada,
             categoria: categoriaInput.value,
             pego: false
         };
@@ -145,23 +144,23 @@ document.addEventListener('DOMContentLoaded', () => {
         saveItems(items);
         renderItems();
 
-        form.reset();
-        categoriaInput.value = novoItem.categoria; // Mantém a categoria
+        produtoInput.value = '';
+        quantidadeInput.value = '1';
+        pesoInput.value = '500';
         produtoInput.focus();
     });
 
-    // Marcar/Desmarcar ou Deletar um item
     accordionContainer.addEventListener('click', (e) => {
         const itemLi = e.target.closest('.item');
         if (!itemLi) return;
 
         const itemId = parseInt(itemLi.dataset.id);
         let items = getItems();
-        const itemIndex = items.findIndex(i => i.id === itemId);
-
+        
         if (e.target.classList.contains('toggle-check')) {
-            if (itemIndex > -1) {
-                items[itemIndex].pego = !items[itemIndex].pego;
+            const item = items.find(i => i.id === itemId);
+            if (item) {
+                item.pego = !item.pego;
                 saveItems(items);
                 renderItems();
             }
@@ -176,7 +175,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Limpar itens concluídos
     clearCompletedBtn.addEventListener('click', () => {
         if (confirm('Isso removerá todos os itens marcados. Continuar?')) {
             let items = getItems();

@@ -1,60 +1,82 @@
 // script.js
 
 document.addEventListener('DOMContentLoaded', () => {
-    // Seleciona os elementos principais do DOM
+    // --- Seletores de Elementos ---
     const form = document.getElementById('add-item-form');
     const produtoInput = document.getElementById('produto-input');
-    const quantidadeInput = document.getElementById('quantidade-input');
     const categoriaInput = document.getElementById('categoria-input');
     const accordionContainer = document.getElementById('accordionCategorias');
     const listaVaziaMsg = document.getElementById('lista-vazia-msg');
     const clearCompletedBtn = document.getElementById('clear-completed-btn');
+    
+    // Seletores para os campos de quantidade
+    const quantidadeUnidadeContainer = document.getElementById('quantidade-container-unidade');
+    const quantidadePesoContainer = document.getElementById('quantidade-container-peso');
+    const quantidadeInput = document.getElementById('quantidade-input');
+    const pesoInput = document.getElementById('peso-input');
+    const unidadeInput = document.getElementById('unidade-input');
+
+    // Seletor para o Dark Mode
+    const darkModeToggle = document.getElementById('darkModeToggle');
+
+    // --- Lógica do Dark Mode ---
+    const enableDarkMode = () => {
+        document.body.classList.add('dark-mode');
+        localStorage.setItem('theme', 'dark');
+        darkModeToggle.checked = true;
+    };
+
+    const disableDarkMode = () => {
+        document.body.classList.remove('dark-mode');
+        localStorage.setItem('theme', 'light');
+        darkModeToggle.checked = false;
+    };
+
+    // Verifica a preferência do usuário ao carregar a página
+    if (localStorage.getItem('theme') === 'dark') {
+        enableDarkMode();
+    }
+
+    darkModeToggle.addEventListener('click', () => {
+        if (localStorage.getItem('theme') !== 'dark') {
+            enableDarkMode();
+        } else {
+            disableDarkMode();
+        }
+    });
 
     // --- Gerenciamento de Dados com localStorage ---
-
-    // Função para buscar os itens do localStorage
-    const getItems = () => {
-        const items = localStorage.getItem('listaDeCompras');
-        return items ? JSON.parse(items) : [];
-    };
-
-    // Função para salvar os itens no localStorage
-    const saveItems = (items) => {
-        localStorage.setItem('listaDeCompras', JSON.stringify(items));
-    };
+    const getItems = () => JSON.parse(localStorage.getItem('listaDeCompras')) || [];
+    const saveItems = (items) => localStorage.setItem('listaDeCompras', JSON.stringify(items));
 
     // --- Lógica de Renderização ---
-
-    // Função principal que desenha a lista na tela
     const renderItems = () => {
         const items = getItems();
-        accordionContainer.innerHTML = ''; // Limpa a lista atual
+        accordionContainer.innerHTML = '';
 
         if (items.length === 0) {
-            listaVaziaMsg.classList.remove('d-none'); // Mostra a mensagem de lista vazia
+            listaVaziaMsg.classList.remove('d-none');
             return;
         }
-        listaVaziaMsg.classList.add('d-none'); // Esconde a mensagem
+        listaVaziaMsg.classList.add('d-none');
 
-        // Agrupa os itens por categoria (equivalente ao defaultdict do Python)
         const itensAgrupados = items.reduce((acc, item) => {
             (acc[item.categoria] = acc[item.categoria] || []).push(item);
             return acc;
         }, {});
 
-        // Ordena as categorias alfabeticamente
         const categoriasOrdenadas = Object.keys(itensAgrupados).sort();
 
-        // Cria o HTML para cada categoria e seus itens
         categoriasOrdenadas.forEach((categoria, index) => {
             const itensHtml = itensAgrupados[categoria]
-                .sort((a, b) => a.pego - b.pego) // Itens não pegos primeiro
+                .sort((a, b) => a.pego - b.pego)
                 .map(item => `
                     <li class="list-group-item d-flex justify-content-between align-items-center item ${item.pego ? 'item-pego' : ''}" data-id="${item.id}">
                         <div class="form-check">
                             <input class="form-check-input toggle-check" type="checkbox" id="item-${item.id}" ${item.pego ? 'checked' : ''}>
                             <label class="form-check-label" for="item-${item.id}">
-                                <span>${item.quantidade}x ${item.produto}</span>
+                                <!-- A quantidade agora é uma string formatada -->
+                                <span>${item.quantidade} ${item.produto}</span>
                             </label>
                         </div>
                         <button class="btn btn-sm btn-outline-danger delete-btn">
@@ -66,7 +88,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const accordionItemHtml = `
                 <div class="accordion-item">
                     <h2 class="accordion-header" id="heading-${index}">
-                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-${index}" aria-expanded="true" aria-controls="collapse-${index}">
+                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-${index}" aria-expanded="true">
                             ${categoria}
                         </button>
                     </h2>
@@ -81,19 +103,39 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     };
 
-    // --- Event Listeners (Interações do Usuário) ---
+    // --- Event Listeners ---
+
+    // Lógica para alternar o campo de quantidade
+    categoriaInput.addEventListener('change', () => {
+        if (categoriaInput.value === 'Carnes e Frios') {
+            quantidadeUnidadeContainer.classList.add('d-none');
+            quantidadePesoContainer.classList.remove('d-none');
+        } else {
+            quantidadeUnidadeContainer.classList.remove('d-none');
+            quantidadePesoContainer.classList.add('d-none');
+        }
+    });
 
     // Adicionar um novo item
     form.addEventListener('submit', (e) => {
-        e.preventDefault(); // Impede o recarregamento da página
-
+        e.preventDefault();
         const produto = produtoInput.value.trim();
         if (!produto) return;
 
+        let quantidadeFormatada;
+        if (categoriaInput.value === 'Carnes e Frios') {
+            const peso = parseFloat(pesoInput.value);
+            const unidade = unidadeInput.value;
+            quantidadeFormatada = `${peso}${unidade}`;
+        } else {
+            const quantidade = parseInt(quantidadeInput.value);
+            quantidadeFormatada = `${quantidade}x`;
+        }
+
         const novoItem = {
-            id: Date.now(), // Gera um ID único baseado no tempo
+            id: Date.now(),
             produto: produto,
-            quantidade: parseInt(quantidadeInput.value),
+            quantidade: quantidadeFormatada, // Salva a string já formatada
             categoria: categoriaInput.value,
             pego: false
         };
@@ -103,32 +145,29 @@ document.addEventListener('DOMContentLoaded', () => {
         saveItems(items);
         renderItems();
 
-        form.reset(); // Limpa o formulário
-        categoriaInput.value = novoItem.categoria; // Mantém a última categoria selecionada
+        form.reset();
+        categoriaInput.value = novoItem.categoria; // Mantém a categoria
         produtoInput.focus();
     });
 
-    // Marcar/Desmarcar ou Deletar um item (usando delegação de eventos)
+    // Marcar/Desmarcar ou Deletar um item
     accordionContainer.addEventListener('click', (e) => {
-        const target = e.target;
-        const itemLi = target.closest('.item');
+        const itemLi = e.target.closest('.item');
         if (!itemLi) return;
 
         const itemId = parseInt(itemLi.dataset.id);
         let items = getItems();
+        const itemIndex = items.findIndex(i => i.id === itemId);
 
-        // Ação: Marcar/Desmarcar
-        if (target.classList.contains('toggle-check')) {
-            const item = items.find(i => i.id === itemId);
-            if (item) {
-                item.pego = !item.pego;
+        if (e.target.classList.contains('toggle-check')) {
+            if (itemIndex > -1) {
+                items[itemIndex].pego = !items[itemIndex].pego;
                 saveItems(items);
-                renderItems(); // Re-renderiza para atualizar a classe e a ordem
+                renderItems();
             }
         }
 
-        // Ação: Deletar
-        if (target.closest('.delete-btn')) {
+        if (e.target.closest('.delete-btn')) {
             if (confirm('Tem certeza que deseja remover este item?')) {
                 items = items.filter(i => i.id !== itemId);
                 saveItems(items);
@@ -148,5 +187,5 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // --- Inicialização ---
-    renderItems(); // Renderiza a lista inicial ao carregar a página
+    renderItems();
 });

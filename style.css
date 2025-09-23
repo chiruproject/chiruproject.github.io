@@ -1,9 +1,133 @@
 /* style.css */
-body { background-color: #f0f2f5; }
-.container { max-width: 700px; }
-.item-pego .form-check-label span { text-decoration: line-through; color: #6c757d; }
-.item-pego { background-color: #f8f9fa; }
-.delete-btn { border: none; background: none; }
-.form-check-input { cursor: pointer; }
-.accordion-button:not(.collapsed) { background-color: #e7f1ff; }
-.form-control, .form-select { min-width: 120px; }
+
+/* Definição de variáveis de cores e fontes (Tema Claro) */
+:root {
+    --font-family: 'Poppins', sans-serif;
+    --primary-color: #00796b; /* Teal */
+    --primary-hover: #004d40;
+    --bg-color: #eef2f3;
+    --card-bg-color: #ffffff;
+    --text-color: #212529;
+    --text-muted-color: #6c757d;
+    --border-color: #dee2e6;
+    --accordion-btn-bg: #ffffff;
+    --accordion-btn-active-bg: #e0f2f1;
+    --item-pego-bg: #f8f9fa;
+    --item-pego-text: #6c757d;
+    --shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.1);
+    --border-radius: 0.75rem;
+}
+
+/* Variáveis para o Tema Escuro */
+body.dark-mode {
+    --primary-color: #4db6ac; /* Teal mais claro */
+    --primary-hover: #80cbc4;
+    --bg-color: #121212;
+    --card-bg-color: #1e1e1e;
+    --text-color: #e0e0e0;
+    --text-muted-color: #9e9e9e;
+    --border-color: #424242;
+    --accordion-btn-bg: #2c2c2c;
+    --accordion-btn-active-bg: #37474f;
+    --item-pego-bg: #2a2a2a;
+    --item-pego-text: #757575;
+    --shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.25);
+}
+
+body {
+    font-family: var(--font-family);
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.container {
+    max-width: 750px;
+}
+
+.card {
+    background-color: var(--card-bg-color);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
+    transition: background-color 0.3s ease;
+}
+
+.card-title {
+    color: var(--primary-color);
+    font-weight: 700;
+}
+
+.form-control, .form-select {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    border-color: var(--border-color);
+}
+.form-control:focus, .form-select:focus {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.25rem rgba(var(--primary-color), 0.25);
+}
+
+.btn-primary {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+    transition: background-color 0.2s ease;
+}
+.btn-primary:hover {
+    background-color: var(--primary-hover);
+    border-color: var(--primary-hover);
+}
+
+.accordion-item {
+    background-color: var(--card-bg-color);
+    border-color: var(--border-color);
+}
+.accordion-button {
+    background-color: var(--accordion-btn-bg);
+    color: var(--text-color);
+    font-weight: 500;
+}
+.accordion-button:not(.collapsed) {
+    background-color: var(--accordion-btn-active-bg);
+    color: var(--primary-color);
+    box-shadow: inset 0 -1px 0 var(--border-color);
+}
+.accordion-button:focus {
+    box-shadow: none;
+    border-color: rgba(0,0,0,.125);
+}
+
+.list-group-item {
+    background-color: transparent;
+    border-bottom: 1px solid var(--border-color) !important;
+}
+.list-group-item:last-child {
+    border-bottom: none !important;
+}
+
+.item-pego {
+    background-color: var(--item-pego-bg);
+    opacity: 0.6;
+}
+.item-pego .form-check-label span {
+    text-decoration: line-through;
+    color: var(--item-pego-text);
+}
+
+.delete-btn {
+    border: none;
+    background: none;
+}
+
+.form-check-input {
+    cursor: pointer;
+}
+.form-check-input:checked {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.footer-text {
+    color: var(--text-muted-color);
+}

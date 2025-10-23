@@ -68,8 +68,8 @@ class CustomFooter extends HTMLElement {
       <footer>
         <div class="footer-content">
           <div>
-            <div class="footer-logo">TVStreamX</div>
-            <p>O melhor addon para Kodi com anti-bloqueio integrado e 100% gratuito.</p>
+            <div class="footer-logo">TVSTREAMX</div>
+<p>O melhor addon para Kodi com anti-bloqueio integrado e 100% gratuito.</p>
           </div>
           <div>
             <h3 class="font-bold mb-3">Links Rápidos</h3>
@@ -82,18 +82,19 @@ class CustomFooter extends HTMLElement {
           <div>
             <h3 class="font-bold mb-3">Comunidade</h3>
             <div class="footer-links">
-              <a href="https://t.me/tvstreamxgroup" target="_blank"><i data-feather="chevron-right" class="w-4 h-4 inline mr-1"></i> Grupo no Telegram</a>
+              <a href="https://t.me/tvstreamx" target="_blank"><i data-feather="chevron-right" class="w-4 h-4 inline mr-1"></i> Grupo no Telegram</a>
               <a href="https://github.com/tvstreamx" target="_blank"><i data-feather="chevron-right" class="w-4 h-4 inline mr-1"></i> GitHub</a>
-            </div>
+              <a href="https://streamxtv.github.io/repository.streamxtv-1.6.zip" download><i data-feather="chevron-right" class="w-4 h-4 inline mr-1"></i> Download Repositório</a>
+</div>
           </div>
         </div>
         <div class="social-links">
-          <a href="https://t.me/tvstreamxgroup" target="_blank" title="Telegram"><i data-feather="send"></i></a>
+          <a href="https://t.me/tvstreamx" target="_blank" title="Telegram"><i data-feather="send"></i></a>
           <a href="https://github.com/tvstreamx" target="_blank" title="GitHub"><i data-feather="github"></i></a>
         </div>
         <div class="copyright">
-          &copy; 2025 TVStreamX. Todos os direitos reservados.
-        </div>
+          &copy; 2025 TVSTREAMX. Todos os direitos reservados.
+</div>
       </footer>
     `;
   }

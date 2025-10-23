@@ -20,5 +20,4 @@ const observer = new IntersectionObserver((entries) => {
 document.querySelectorAll('#features div, #download div, #faq div').forEach(el => {
     observer.observe(el);
 });
-
-console.log('TVStreamX loaded - https://github.com/tvstreamx');
+console.log('TVSTREAMX loaded - https://github.com/tvstreamx');

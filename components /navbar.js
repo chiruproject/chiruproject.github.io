@@ -56,8 +56,8 @@ class CustomNavbar extends HTMLElement {
         }
       </style>
       <nav>
-        <a href="/" class="logo">TVStreamX</a>
-        <ul>
+        <a href="/" class="logo">TVSTREAMX</a>
+<ul>
           <li><a href="#features"><i data-feather="star"></i> Recursos</a></li>
           <li><a href="#download"><i data-feather="download"></i> Instalar</a></li>
           <li><a href="#faq"><i data-feather="help-circle"></i> FAQ</a></li>
